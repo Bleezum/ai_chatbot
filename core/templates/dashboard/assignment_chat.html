@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mx-auto p-6 max-w-2xl">
+    <h2 class="text-2xl font-bold mb-4">AI Assignment Help Chat</h2>
+
+    <div id="chat-box" class="flex flex-col gap-3 border rounded p-4 h-96 overflow-y-auto bg-gray-50">
+        <!-- Messages appear here -->
+    </div>
+
+    <div class="mt-4 flex">
+        <input id="user-input" type="text" placeholder="Ask your assignment question..."
+               class="flex-1 border rounded p-2 mr-2">
+        <button id="send-btn" class="bg-blue-500 text-white px-4 rounded">Send</button>
+    </div>
+</div>
+
+<script>
+const chatBox = document.getElementById("chat-box");
+const userInput = document.getElementById("user-input");
+const sendBtn = document.getElementById("send-btn");
+const studentName = "{{ request.user.username|escapejs }}";
+
+function formatBold(text) {
+    return text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+}
+
+function appendMessage(sender, text, type="student") {
+    const msg = document.createElement("div");
+    msg.className = type === "student"
+        ? "self-end bg-blue-100 text-blue-900 rounded-xl p-3 max-w-[80%] shadow"
+        : "self-start bg-green-100 text-green-900 rounded-xl p-3 max-w-[80%] shadow";
+
+    msg.innerHTML = `<div class="font-semibold mb-1">${sender}</div>${formatBold(text)}`;
+    chatBox.appendChild(msg);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    return msg;
+}
+
+// Typing indicator
+function showTypingIndicator() {
+    const indicator = document.createElement("div");
+    indicator.id = "typing-indicator";
+    indicator.className = "self-start bg-green-100 text-green-900 rounded-xl p-3 max-w-[80%] shadow flex gap-1";
+    indicator.innerHTML = '<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>';
+    chatBox.appendChild(indicator);
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    let dots = 0;
+    const interval = setInterval(() => {
+        dots = (dots + 1) % 4;
+        indicator.querySelectorAll(".dot").forEach((el, i) => {
+            el.style.visibility = i < dots ? "visible" : "hidden";
+        });
+    }, 500);
+
+    return {element: indicator, interval};
+}
+
+async function sendMessage() {
+    const message = userInput.value.trim();
+    if (!message) return;
+
+    appendMessage(studentName, message, "student");
+    userInput.value = "";
+
+    const typing = showTypingIndicator();
+
+    const response = await fetch("{% url 'assignment_chat_ask' %}", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message})
+    });
+
+    clearInterval(typing.interval);
+    typing.element.remove();
+
+    const data = await response.json();
+    data.responses.forEach(item => {
+        let text = `<strong>${item.title}:</strong> ${item.description}`;
+        if (item.url) {
+            text += ` <a href="${item.url}" target="_blank" class="underline text-blue-600">Resource</a>`;
+        }
+        appendMessage("AI Assistant", text, "ai");
+    });
+}
+
+sendBtn.addEventListener("click", sendMessage);
+userInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") sendMessage();
+});
+</script>
+{% endblock %}

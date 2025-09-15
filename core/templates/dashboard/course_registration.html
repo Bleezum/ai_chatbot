@@ -1,0 +1,143 @@
+<!-- templates/dashboard/course_registration.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold">Course Registration</h1>
+        <p class="text-gray-600">Register for courses for {{ current_semester.name }}</p>
+    </div>
+
+    <!-- Registration Info -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="font-semibold text-blue-800">Registration Period</h3>
+                <p class="text-blue-600">
+                    {{ current_semester.registration_start }} to {{ current_semester.registration_end }}
+                </p>
+                <p class="text-blue-600">
+                    Add/Drop Deadline: {{ current_semester.add_drop_deadline }}
+                </p>
+            </div>
+            <div class="text-right">
+                <p class="text-sm text-blue-600">Program: {{ program_enrollment.program.code }}</p>
+                <p class="text-sm text-blue-600">Current Semester: {{ program_enrollment.current_semester }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Available Courses -->
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b">
+            <h2 class="text-xl font-bold">Available Courses</h2>
+        </div>
+        <div class="p-6">
+            {% if available_offerings %}
+            <div class="grid grid-cols-1 gap-6">
+                {% for offering in available_offerings %}
+                <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <h3 class="font-bold text-lg">{{ offering.course.code }}</h3>
+                            <h4 class="text-gray-800">{{ offering.course.name }}</h4>
+                        </div>
+                        <div class="text-right">
+                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                                {{ offering.course.get_course_type_display }}
+                            </span>
+                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded block mt-1">
+                                {{ offering.course.credits }} Credits
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <p class="text-sm text-gray-600">
+                                <i class="fas fa-user-tie mr-2"></i>
+                                {% if offering.lecturer %}
+                                    {{ offering.lecturer.get_full_name }}
+                                {% else %}
+                                    Lecturer: TBA
+                                {% endif %}
+                            </p>
+                            <p class="text-sm text-gray-600">
+                                <i class="fas fa-clock mr-2"></i>
+                                {{ offering.schedule|default:"Schedule: TBA" }}
+                            </p>
+                            <p class="text-sm text-gray-600">
+                                <i class="fas fa-university mr-2"></i>
+                                {{ offering.room|default:"Room: TBA" }}
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600">
+                                <i class="fas fa-users mr-2"></i>
+                                {{ offering.enrolled }}/{{ offering.capacity }} enrolled
+                            </p>
+                            <p class="text-sm text-gray-600">
+                                <i class="fas fa-section mr-2"></i>
+                                Section: {{ offering.section }}
+                            </p>
+                            <p class="text-sm text-gray-600">
+                                <i class="fas fa-graduation-cap mr-2"></i>
+                                Level: {{ offering.course.get_level_display }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Prerequisites -->
+                    {% with prerequisites=offering.course.required_prerequisites.all %}
+                    {% if prerequisites %}
+                    <div class="mb-4">
+                        <p class="text-sm font-medium text-gray-700 mb-1">Prerequisites:</p>
+                        <div class="flex flex-wrap gap-1">
+                            {% for prereq in prerequisites %}
+                            <span class="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">
+                                {{ prereq.prerequisite.code }}
+                                {% if prereq.minimum_grade %}(Min: {{ prereq.minimum_grade }}){% endif %}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+
+                    <!-- Action Buttons -->
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium {% if offering.is_full %}text-red-600{% else %}text-green-600{% endif %}">
+                            {% if offering.is_full %}Full{% else %}{{ offering.available_seats }} seats available{% endif %}
+                        </span>
+                        
+                        {% if offering.id in enrolled_courses %}
+                        <span class="bg-green-100 text-green-800 text-sm px-3 py-1 rounded">
+                            Already Enrolled
+                        </span>
+                        {% elif offering.is_full %}
+                        <span class="bg-red-100 text-red-800 text-sm px-3 py-1 rounded">
+                            Course Full
+                        </span>
+                        {% else %}
+                        <form action="{% url 'register_course' offering.id %}" method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm">
+                                Register
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-8">
+                <i class="fas fa-book text-4xl text-gray-300 mb-4"></i>
+                <p class="text-gray-500">No courses available for registration at this time.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

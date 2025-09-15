@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .dashboard-section {
+        display: none;
+        animation: fadeIn 0.3s ease-in;
+    }
+    .dashboard-section.active {
+        display: block;
+    }
+    .sidebar-nav.active {
+        background-color: #1e40af;
+    }
+    .chat-message {
+        max-width: 70%;
+    }
+    .ai-response {
+        background-color: #f3f4f6;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="flex min-h-screen bg-gray-100">
+    <!-- Include Sidebar Partial -->
+    {% include 'partials/sidebar.html' %}
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col lg:ml-0">
+        <!-- Include Header Partial -->
+        {% include 'partials/header.html' %}
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-x-hidden overflow-y-auto">
+            <div class="container mx-auto px-6 py-8">
+                <!-- Dashboard Sections -->
+                <div id="dashboard" class="dashboard-section active">
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold">Student Dashboard</h1>
+                        <p class="text-gray-600">Welcome back, {{ user.first_name }}! Here's your academic overview.</p>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center">
+                                <div class="rounded-full bg-blue-100 p-3">
+                                    <i class="fas fa-book text-blue-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h2 class="text-gray-600">Current Courses</h2>
+                                    <p class="text-2xl font-bold text-gray-900">{{ current_courses_count }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center">
+                                <div class="rounded-full bg-green-100 p-3">
+                                    <i class="fas fa-tasks text-green-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h2 class="text-gray-600">Pending Assignments</h2>
+                                    <p class="text-2xl font-bold">{{ pending_assignments }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center">
+                                <div class="rounded-full bg-yellow-100 p-3">
+                                    <i class="fas fa-calendar-alt text-yellow-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h2 class="text-gray-600">Upcoming Exams</h2>
+                                    <p class="text-2xl font-bold">2</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <div class="flex items-center">
+                                <div class="rounded-full bg-red-100 p-3">
+                                    <i class="fas fa-bell text-red-600 text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <h2 class="text-gray-600">Notifications</h2>
+                                    <p class="text-2xl font-bold">7</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Assistant Chat -->
+                    <div class="bg-white rounded-lg shadow p-6 mb-8">
+                        <h2 class="text-xl font-bold mb-4">AI Assistant</h2>
+                        <div class="bg-gray-50 rounded-lg p-4 mb-4 h-64 overflow-y-auto" id="chatContainer">
+                            <div class="chat-message ai-response rounded-lg p-3 mb-3">
+                                <p class="text-sm">Hello {{ user.first_name }}! I'm your AI assistant. How can I help you with your academic journey today?</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <input type="text" placeholder="Ask me anything..." class="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" id="chatInput">
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition duration-200" id="sendMessage">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links and Upcoming Events -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <h2 class="text-xl font-bold mb-4">Quick Access</h2>
+                            <div class="grid grid-cols-2 gap-4">
+                                <a href="{% url 'student_timetable'%}" class="sidebar-nav bg-blue-50 hover:bg-blue-100 rounded-lg p-4 text-center transition duration-200" data-section="timetable">
+                                    <i class="fas fa-table text-blue-600 text-2xl mb-2"></i>
+                                    <p class="font-medium">Timetable</p>
+                                </a>
+                                <a href="{% url 'assignment_list'%}" class="sidebar-nav bg-green-50 hover:bg-green-100 rounded-lg p-4 text-center transition duration-200" data-section="assignments">
+                                    <i class="fas fa-tasks text-green-600 text-2xl mb-2"></i>
+                                    <p class="font-medium">Assignments</p>
+                                </a>
+                                <a href="{% url 'finance'%}" class="sidebar-nav bg-yellow-50 hover:bg-yellow-100 rounded-lg p-4 text-center transition duration-200" data-section="finance">
+                                    <i class="fas fa-money-bill-wave text-yellow-600 text-2xl mb-2"></i>
+                                    <p class="font-medium">Fee Status</p>
+                                </a>
+                                <a href="{% url 'student_courses'%}" class="sidebar-nav bg-purple-50 hover:bg-purple-100 rounded-lg p-4 text-center transition duration-200" data-section="courses">
+                                    <i class="fas fa-book text-purple-600 text-2xl mb-2"></i>
+                                    <p class="font-medium">Courses</p>
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-lg shadow p-6">
+                            <h2 class="text-xl font-bold mb-4">Upcoming Events</h2>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between border-b pb-3">
+                                    <div>
+                                        <h3 class="font-semibold">Advanced Programming Exam</h3>
+                                        <p class="text-gray-600">October 15, 2023 - 10:00 AM</p>
+                                    </div>
+                                    <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded">Exam</span>
+                                </div>
+                                <div class="flex items-center justify-between border-b pb-3">
+                                    <div>
+                                        <h3 class="font-semibold">Database Assignment Due</h3>
+                                        <p class="text-gray-600">October 10, 2023 - 11:59 PM</p>
+                                    </div>
+                                    <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Assignment</span>
+                                </div>
+                                <div class="flex items-center justify-between border-b pb-3">
+                                    <div>
+                                        <h3 class="font-semibold">AI Club Meeting</h3>
+                                        <p class="text-gray-600">October 12, 2023 - 3:00 PM</p>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Event</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other sections would be defined here -->
+                <div id="timetable" class="dashboard-section">
+                    <!-- Timetable content -->
+                </div>
+
+                <div id="courses" class="dashboard-section">
+                    <!-- Courses content -->
+                </div>
+
+                <!-- Add more sections for assignments, grades, finance, etc. -->
+
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Sidebar toggle for mobile
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    
+    sidebarToggle.addEventListener('click', function() {
+        sidebar.classList.toggle('-translate-x-full');
+    });
+
+    // Section navigation
+    const navLinks = document.querySelectorAll('.sidebar-nav');
+    const sections = document.querySelectorAll('.dashboard-section');
+    const sectionTitle = document.getElementById('sectionTitle');
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all links and sections
+            navLinks.forEach(nav => nav.classList.remove('active'));
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Add active class to clicked link
+            this.classList.add('active');
+            
+            // Show corresponding section
+            const sectionId = this.getAttribute('data-section');
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                sectionTitle.textContent = this.textContent.trim();
+            }
+
+            // Close sidebar on mobile after selection
+            if (window.innerWidth < 768) {
+                sidebar.classList.add('-translate-x-full');
+            }
+        });
+    });
+
+    // AI Chat functionality
+    const chatInput = document.getElementById('chatInput');
+    const sendMessage = document.getElementById('sendMessage');
+    const chatContainer = document.getElementById('chatContainer');
+
+    function addMessage(message, isAI = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-message rounded-lg p-3 mb-3 ${isAI ? 'ai-response' : 'bg-blue-100 ml-auto'}`;
+        messageDiv.innerHTML = `<p class="text-sm">${message}</p>`;
+        chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    sendMessage.addEventListener('click', function() {
+        const message = chatInput.value.trim();
+        if (message) {
+            addMessage(message, false);
+            chatInput.value = '';
+            
+            // Simulate AI response
+            setTimeout(() => {
+                addMessage("I'm still learning! This feature will be integrated with Gemini API soon.", true);
+            }, 1000);
+        }
+    });
+
+    chatInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage.click();
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-6xl mx-auto mt-10 flex flex-col lg:flex-row gap-6">
+    <!-- Form -->
+    <div class="flex-1 p-6 bg-white shadow-md rounded-md">
+        <h1 class="text-2xl font-bold mb-4 text-center">Revision Question Generator</h1>
+        <form method="POST" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="block mb-1 font-medium">Course</label>
+                <select name="course" class="w-full border px-3 py-2 rounded" required>
+                    <option value="">-- Select a course --</option>
+                    {% for course in courses %}
+                        <option value="{{ course.id }}">{{ course.code }} - {{ course.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">Topic</label>
+                <input type="text" name="topic" class="w-full border px-3 py-2 rounded" required>
+            </div>
+            <div>
+                <label class="block mb-1 font-medium">Number of Questions</label>
+                <input type="number" name="num_questions" class="w-full border px-3 py-2 rounded" value="5">
+            </div>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Generate Questions</button>
+        </form>
+    </div>
+
+    <!-- Generated Questions -->
+    {% if questions %}
+    <div class="flex-1 p-6 bg-gray-50 shadow-md rounded-md overflow-auto">
+        <h2 class="text-xl font-semibold mb-4 text-center">Generated Questions</h2>
+        <ol class="list-decimal list-inside space-y-4" id="questions-list">
+            {% for q in questions %}
+            <li class="prose" data-html="{{ q|escape }}">{{ "" }}</li> <!-- initially empty -->
+            {% endfor %}
+        </ol>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Typing Effect JS -->
+<script>
+function typeHTML(element, html, speed = 15, callback = null) {
+    let i = 0;
+    function type() {
+        if (i <= html.length) {
+            element.innerHTML = html.slice(0, i);
+            i++;
+            setTimeout(type, speed);
+        } else if (callback) {
+            callback();
+        }
+    }
+    type();
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const questions = document.querySelectorAll("#questions-list li");
+
+    let index = 0;
+    function typeNext() {
+        if (index < questions.length) {
+            const li = questions[index];
+            const html = li.getAttribute("data-html");
+            typeHTML(li, html, 15, () => {
+                index++;
+                setTimeout(typeNext, 300); // small delay between questions
+            });
+        }
+    }
+
+    typeNext();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="bg-white rounded-xl shadow-lg p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">📊 My Grades</h2>
+
+    {% if enrollments %}
+        <div class="overflow-x-auto rounded-lg border border-gray-200">
+            <table class="w-full border-collapse text-sm text-left">
+                <thead>
+                    <tr class="bg-indigo-50 text-gray-700">
+                        <th class="border-b p-3 font-semibold">Course Code</th>
+                        <th class="border-b p-3 font-semibold">Course Name</th>
+                        <th class="border-b p-3 font-semibold">Lecturer</th>
+                        <th class="border-b p-3 font-semibold">Semester</th>
+                        <th class="border-b p-3 font-semibold">Grade</th>
+                        <th class="border-b p-3 font-semibold">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for enrollment in enrollments %}
+                    <tr class="hover:bg-indigo-50 transition-colors">
+                        <td class="p-3 font-medium text-gray-900">
+                            {{ enrollment.course_offering.course.code }}
+                        </td>
+                        <td class="p-3">{{ enrollment.course_offering.course.name }}</td>
+                        <td class="p-3">
+                            {{ enrollment.course_offering.lecturer.get_full_name|default:"-" }}
+                        </td>
+                        <td class="p-3">{{ enrollment.course_offering.semester.name }}</td>
+                        <td class="p-3 font-semibold">
+                            {% if enrollment.grade %}
+                                {{ enrollment.grade }}
+                            {% else %}
+                                <span class="text-gray-400">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td class="p-3">{{ enrollment.get_status_display }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="flex flex-col items-center justify-center py-12 text-gray-600">
+            <svg class="w-16 h-16 mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M12 14l9-5-9-5-9 5 9 5zm0 0v6m0-6L3 9m9 5l9-5" />
+            </svg>
+            <p class="text-lg font-medium">No grades available yet.</p>
+            <p class="text-sm">Please check again after results are published.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

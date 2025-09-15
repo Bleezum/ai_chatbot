@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header Section -->
+        <div class="text-center mb-16">
+            <h1 class="text-4xl font-bold text-blue-800 mb-6">AI-Powered University Assistance</h1>
+            <p class="text-xl text-gray-700 mb-8">Revolutionizing the academic experience through artificial intelligence</p>
+            <div class="bg-blue-100 p-6 rounded-lg border-l-4 border-blue-500">
+                <p class="text-blue-800">Our AI assistant helps students navigate their academic journey more efficiently, saving time and reducing stress while improving learning outcomes.</p>
+            </div>
+        </div>
+
+        <!-- How It Works Section -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">How It Works</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-robot text-2xl text-blue-600"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Intelligent Assistance</h3>
+                    <p class="text-gray-600">Our AI analyzes your academic profile to provide personalized guidance and support.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-brain text-2xl text-green-600"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Adaptive Learning</h3>
+                    <p class="text-gray-600">The system learns from your interactions to provide increasingly relevant assistance over time.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-chart-line text-2xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Performance Tracking</h3>
+                    <p class="text-gray-600">Monitor your academic progress and receive actionable insights for improvement.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Features Section -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Key Features</h2>
+            
+            <div class="space-y-10">
+                <!-- Academic Assistant -->
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/4 mb-6 md:mb-0 flex justify-center">
+                        <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-robot text-3xl text-blue-600"></i>
+                        </div>
+                    </div>
+                    <div class="md:w-3/4">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-3">AI Academic Assistant</h3>
+                        <p class="text-gray-700 mb-3">Get instant answers to your academic questions, course-related queries, and university procedures.</p>
+                        <ul class="text-gray-600 list-disc pl-5 space-y-1">
+                            <li>24/7 availability for immediate assistance</li>
+                            <li>Context-aware responses based on your courses and program</li>
+                            <li>Guidance on academic policies and requirements</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Smart Timetable -->
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/4 mb-6 md:mb-0 flex justify-center">
+                        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-calendar-alt text-3xl text-green-600"></i>
+                        </div>
+                    </div>
+                    <div class="md:w-3/4">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-3">Smart Timetable Management</h3>
+                        <p class="text-gray-700 mb-3">AI-generated personalized schedules that optimize your learning and prevent conflicts.</p>
+                        <ul class="text-gray-600 list-disc pl-5 space-y-1">
+                            <li>Automatic scheduling based on your course load and preferences</li>
+                            <li>Smart reminders for assignments, exams, and deadlines</li>
+                            <li>Conflict detection and resolution for your schedule</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Assignment Helper -->
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/4 mb-6 md:mb-0 flex justify-center">
+                        <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-tasks text-3xl text-purple-600"></i>
+                        </div>
+                    </div>
+                    <div class="md:w-3/4">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-3">AI Assignment Helper</h3>
+                        <p class="text-gray-700 mb-3">Get intelligent guidance on your assignments without providing direct answers.</p>
+                        <ul class="text-gray-600 list-disc pl-5 space-y-1">
+                            <li>Brainstorming assistance and idea generation</li>
+                            <li>Research guidance and resource recommendations</li>
+                            <li>Structure and formatting suggestions</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Question Generator -->
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/4 mb-6 md:mb-0 flex justify-center">
+                        <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-question-circle text-3xl text-yellow-600"></i>
+                        </div>
+                    </div>
+                    <div class="md:w-3/4">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-3">Smart Question Generator</h3>
+                        <p class="text-gray-700 mb-3">Create practice questions tailored to your courses and exam preparation needs.</p>
+                        <ul class="text-gray-600 list-disc pl-5 space-y-1">
+                            <li>Customized practice questions based on your courses</li>
+                            <li>Adaptive difficulty levels matching your progress</li>
+                            <li>Exam preparation with topic-specific quizzes</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Library Resources -->
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/4 mb-6 md:mb-0 flex justify-center">
+                        <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-book-open text-3xl text-red-600"></i>
+                        </div>
+                    </div>
+                    <div class="md:w-3/4">
+                        <h3 class="text-2xl font-semibold text-gray-800 mb-3">AI-Curated Learning Resources</h3>
+                        <p class="text-gray-700 mb-3">Discover the most relevant learning materials for your courses and research topics.</p>
+                        <ul class="text-gray-600 list-disc pl-5 space-y-1">
+                            <li>Personalized reading recommendations</li>
+                            <li>Research paper suggestions based on your interests</li>
+                            <li>Multimedia learning resources tailored to your needs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Benefits Section -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Benefits for Students</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                        <i class="fas fa-clock text-blue-600 mr-3"></i>
+                        Time Efficiency
+                    </h3>
+                    <p class="text-gray-600">Reduce time spent on administrative tasks and searching for information by up to 70%, allowing more focus on actual learning.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                        <i class="fas fa-graduation-cap text-green-600 mr-3"></i>
+                        Improved Academic Performance
+                    </h3>
+                    <p class="text-gray-600">Personalized support and timely reminders help maintain consistent study habits and meet important deadlines.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                        <i class="fas fa-stress text-purple-600 mr-3"></i>
+                        Reduced Stress
+                    </h3>
+                    <p class="text-gray-600">AI assistance minimizes the anxiety of missing deadlines or being unprepared for exams through proactive reminders and guidance.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                        <i class="fas fa-lightbulb text-yellow-600 mr-3"></i>
+                        Enhanced Learning
+                    </h3>
+                    <p class="text-gray-600">Adaptive learning resources and personalized question generation cater to individual learning styles and knowledge gaps.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Getting Started Section -->
+        <div class="bg-blue-50 p-8 rounded-lg border border-blue-200">
+            <h2 class="text-2xl font-bold text-blue-800 mb-6 text-center">Getting Started</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span class="text-white font-bold">1</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-2">Explore Features</h3>
+                    <p class="text-sm text-gray-600">Familiarize yourself with the various AI tools available</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span class="text-white font-bold">2</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-2">Set Preferences</h3>
+                    <p class="text-sm text-gray-600">Customize the AI assistance based on your academic needs</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span class="text-white font-bold">3</span>
+                    </div>
+                    <h3 class="font-semibold text-gray-800 mb-2">Engage Regularly</h3>
+                    <p class="text-sm text-gray-600">The more you use the system, the better it adapts to your needs</p>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <a href="{% url 'academic_chat' %}" class="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-300">
+                    Try AI Assistant Now
+                </a>
+            </div>
+        </div>
+
+        <!-- FAQ Section -->
+        <div class="mt-16">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Frequently Asked Questions</h2>
+            
+            <div class="space-y-6">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Is my data secure with the AI system?</h3>
+                    <p class="text-gray-600">Yes, all student data is encrypted and handled in compliance with educational data privacy regulations. The AI only accesses information necessary to provide academic assistance.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Can the AI help with specific course content?</h3>
+                    <p class="text-gray-600">Absolutely! The AI is trained on your course materials and can provide explanations, examples, and guidance specific to your curriculum.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">How does the AI generate my timetable?</h3>
+                    <p class="text-gray-600">The timetable generator considers your enrolled courses, preferred study times, breaks between classes, and optimal learning patterns to create an efficient schedule.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Is there a cost to use these AI features?</h3>
+                    <p class="text-gray-600">No, the AI-powered assistance is provided as part of the university's commitment to enhancing student learning experiences at no additional cost.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-4xl font-bold text-blue-800 mb-6">University AI Assistant Portal</h1>
+        <p class="text-xl text-gray-700 mb-8">Your intelligent academic companion powered by AI</p>
+        
+    
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <a href="{% url 'academic_chat' %}" class="block">
+                <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition cursor-pointer">
+                    <i class="fas fa-robot text-4xl text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">AI Assistant</h3>
+                    <p class="text-gray-600">
+                        Get instant answers to your academic questions using our AI-powered chatbot.
+                    </p>
+                </div>
+            </a>
+            
+            <a href="{% url 'my_timetable' %}" class="block">
+                <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
+                    <i class="fas fa-calendar-alt text-4xl text-green-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Timetable Management</h3>
+                    <p class="text-gray-600">Access your personalized schedule and never miss important deadlines.</p>
+                </div>
+            </a>
+            
+            <a href="{% url 'info' %}" class="block">
+                <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition cursor-pointer">
+                    <i class="fas fa-bell text-4xl text-yellow-600 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Info</h3>
+                    <p class="text-gray-600">Know More about AI Powered University Assistance.</p>
+                   
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

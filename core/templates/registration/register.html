@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
+    <h2 class="text-2xl font-bold text-center mb-6">Register for AI Assistant Portal</h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="id_first_name">
+                    First Name
+                </label>
+                {{ form.first_name }}
+            </div>
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="id_last_name">
+                    Last Name
+                </label>
+                {{ form.last_name }}
+            </div>
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="id_username">
+                Username
+            </label>
+            {{ form.username }}
+            {% if form.username.errors %}
+            <p class="text-red-500 text-xs italic">{{ form.username.errors.0 }}</p>
+            {% endif %}
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="id_email">
+                Email
+            </label>
+            {{ form.email }}
+            {% if form.email.errors %}
+            <p class="text-red-500 text-xs italic">{{ form.email.errors.0 }}</p>
+            {% endif %}
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="id_role">
+                    Role
+                </label>
+                {{ form.role }}
+            </div>
+
+            <!-- Registration Number (auto-generated + refresh button) -->
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="id_registration_number">
+                    Registration Number
+                </label>
+                <div class="relative">
+                    {{ form.registration_number|add_class:"pr-12" }}
+                    <button type="button" id="regen_regno" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700" title="Regenerate">
+                        <!-- Refresh icon (Heroicons) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 pointer-events-none" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M4 4v4h.01M16 16v-4h-.01M5.63 5.63A7 7 0 0117 10h-2a5 5 0 00-8.54-3.54L9 9H3V3l2.63 2.63zM14.37 14.37A7 7 0 013 10h2a5 5 0 008.54 3.54L11 11h6v6l-2.63-2.63z"/>
+                        </svg>
+                    </button>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">Auto-generated. You can click the refresh icon to regenerate.</p>
+            </div>
+        </div>
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2" for="id_phone_number">
+                Phone Number
+            </label>
+            {{ form.phone_number }}
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <!-- Password with eye toggle -->
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="id_password1">
+                    Password
+                </label>
+                <div class="relative">
+                    {{ form.password1|add_class:"pr-10" }}
+                    <button type="button" data-toggle="#id_password1" class="pw-toggle absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700" aria-label="Show/Hide password">
+                        <!-- Eye icon -->
+                        <svg class="h-5 w-5 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            <circle cx="12" cy="12" r="3" stroke-width="1.5" stroke="currentColor"/>
+                        </svg>
+                    </button>
+                </div>
+                {% if form.password1.errors %}
+                <p class="text-red-500 text-xs italic">{{ form.password1.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Confirm Password with eye toggle -->
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="id_password2">
+                    Confirm Password
+                </label>
+                <div class="relative">
+                    {{ form.password2|add_class:"pr-10" }}
+                    <button type="button" data-toggle="#id_password2" class="pw-toggle absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700" aria-label="Show/Hide password">
+                        <!-- Eye icon -->
+                        <svg class="h-5 w-5 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            <circle cx="12" cy="12" r="3" stroke-width="1.5" stroke="currentColor"/>
+                        </svg>
+                    </button>
+                </div>
+                {% if form.password2.errors %}
+                <p class="text-red-500 text-xs italic">{{ form.password2.errors.0 }}</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="flex items-center justify-between">
+            <button class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full" type="submit">
+                Register
+            </button>
+        </div>
+    </form>
+    
+    <div class="mt-6 text-center">
+        <p class="text-gray-600">Already have an account? <a href="{% url 'login' %}" class="text-blue-600 hover:text-blue-800">Login here</a></p>
+    </div>
+</div>
+
+<style>
+    input, select {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.375rem;
+        box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+    }
+    input:focus, select:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+    }
+</style>
+
+<script>
+/**
+ * Generate a simple 6-digit registration number
+ * Example: 522078
+ */
+function generateRegistrationNumber() {
+    return Math.floor(100000 + Math.random() * 900000); // ensures 6 digits
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const regInput = document.getElementById('id_registration_number');
+    if (regInput) {
+        // Make field read-only
+        regInput.setAttribute('readonly', 'readonly');
+        // Generate if empty
+        if (!regInput.value || regInput.value.trim() === '') {
+            regInput.value = generateRegistrationNumber();
+        }
+        // Refresh button
+        const btn = document.getElementById('regen_regno');
+        if (btn) {
+            btn.addEventListener('click', function() {
+                regInput.value = generateRegistrationNumber();
+            });
+        }
+    }
+
+    // Password eye toggles
+    document.querySelectorAll('.pw-toggle').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const selector = btn.getAttribute('data-toggle');
+            const input = document.querySelector(selector);
+            if (!input) return;
+            input.type = input.type === 'password' ? 'text' : 'password';
+        });
+    });
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'dashboard/student_dashboard.html' %}
+
+{% block content %}
+<div class="bg-white rounded-xl shadow-lg p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">💰 My Finance</h2>
+
+    {% if finance_records %}
+        <div class="overflow-x-auto rounded-lg border border-gray-200">
+            <table class="w-full border-collapse text-sm text-left">
+                <thead>
+                    <tr class="bg-green-50 text-gray-700">
+                        <th class="border-b p-3 font-semibold">Date</th>
+                        <th class="border-b p-3 font-semibold">Type</th>
+                        <th class="border-b p-3 font-semibold">Description</th>
+                        <th class="border-b p-3 font-semibold">Amount</th>
+                        <th class="border-b p-3 font-semibold">Balance</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for record in finance_records %}
+                    <tr class="hover:bg-green-50 transition-colors">
+                        <td class="p-3">{{ record.transaction_date|date:"M d, Y H:i" }}</td>
+                        <td class="p-3">{{ record.get_transaction_type_display }}</td>
+                        <td class="p-3">{{ record.description }}</td>
+                        <td class="p-3 {% if record.transaction_type == 'payment' %}text-green-600{% else %}text-red-600{% endif %}">
+                            {{ record.amount }}
+                        </td>
+                        <td class="p-3 font-semibold">{{ record.balance_after }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="text-center py-12 text-gray-600">
+            <i class="fas fa-money-bill-wave text-4xl text-gray-400 mb-4"></i>
+            <p class="text-lg font-medium">No finance records found.</p>
+            <p class="text-sm">Your financial transactions will appear here.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mx-auto p-6 max-w-2xl">
+    <h2 class="text-2xl font-bold mb-4">Academic AI Chat</h2>
+
+    <div id="chat-box" class="flex flex-col gap-3 border rounded p-4 h-96 overflow-y-auto bg-gray-50">
+        <!-- Messages appear here -->
+    </div>
+
+    <div class="mt-4 flex">
+        <input id="user-input" type="text" placeholder="Ask any academic question..."
+               class="flex-1 border rounded p-2 mr-2">
+        <button id="send-btn" class="bg-blue-500 text-white px-4 rounded">Send</button>
+    </div>
+</div>
+
+<script>
+const chatBox = document.getElementById("chat-box");
+const userInput = document.getElementById("user-input");
+const sendBtn = document.getElementById("send-btn");
+const userName = "{{ request.user.username|default:'Guest'|escapejs }}";
+
+function formatBold(text) {
+    return text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+}
+
+function appendMessage(sender, text, type="user") {
+    const msg = document.createElement("div");
+    msg.className = type === "user"
+        ? "self-end bg-blue-100 text-blue-900 rounded-xl p-3 max-w-[80%] shadow"
+        : "self-start bg-green-100 text-green-900 rounded-xl p-3 max-w-[80%] shadow";
+    msg.innerHTML = `<div class="font-semibold mb-1">${sender}</div>${formatBold(text)}`;
+    chatBox.appendChild(msg);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// Create a blinking typing indicator
+function showTypingIndicator(sender="AI Assistant") {
+    const indicator = document.createElement("div");
+    indicator.className = "self-start bg-green-100 text-green-900 rounded-xl p-3 max-w-[80%] shadow flex gap-1 items-center";
+    indicator.innerHTML = `<div class="font-semibold mb-1">${sender}</div><span id="dots">.</span><span id="dots">.</span><span id="dots">.</span>`;
+    chatBox.appendChild(indicator);
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    let dots = 0;
+    const interval = setInterval(() => {
+        dots = (dots + 1) % 4;
+        const spans = indicator.querySelectorAll("span");
+        spans.forEach((el, i) => el.style.visibility = i < dots ? "visible" : "hidden");
+    }, 500);
+
+    return {element: indicator, interval};
+}
+
+// Typing effect for actual AI message
+function appendMessageTyping(sender, text, speed=20) {
+    return new Promise(resolve => {
+        const msg = document.createElement("div");
+        msg.className = "self-start bg-green-100 text-green-900 rounded-xl p-3 max-w-[80%] shadow";
+
+        const senderDiv = document.createElement("div");
+        senderDiv.className = "font-semibold mb-1";
+        senderDiv.textContent = sender;
+        msg.appendChild(senderDiv);
+
+        const contentDiv = document.createElement("div");
+        msg.appendChild(contentDiv);
+
+        chatBox.appendChild(msg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        let i = 0;
+        function type() {
+            if (i <= text.length) {
+                contentDiv.innerHTML = formatBold(text.slice(0, i)) + "<span class='animate-pulse'>|</span>";
+                i++;
+                chatBox.scrollTop = chatBox.scrollHeight;
+                setTimeout(type, speed);
+            } else {
+                resolve();
+            }
+        }
+        type();
+    });
+}
+
+async function displayResponses(responses) {
+    for (const item of responses) {
+        // Show indicator first
+        const typing = showTypingIndicator();
+        // Small delay to simulate thinking
+        await new Promise(r => setTimeout(r, 800));
+
+        typing.element.remove();
+        clearInterval(typing.interval);
+
+        let text = `<strong>${item.title}:</strong> ${item.description}`;
+        if (item.url) text += ` <a href="${item.url}" target="_blank" class="underline text-blue-600">Resource</a>`;
+
+        await appendMessageTyping("AI Assistant", text, 15);
+    }
+}
+
+async function sendMessage() {
+    const message = userInput.value.trim();
+    if (!message) return;
+
+    appendMessage(userName, message, "user");
+    userInput.value = "";
+
+    const response = await fetch("{% url 'academic_chat_ask' %}", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message})
+    });
+
+    const data = await response.json();
+    await displayResponses(data.responses);
+}
+
+sendBtn.addEventListener("click", sendMessage);
+userInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") sendMessage();
+});
+</script>
+{% endblock %}

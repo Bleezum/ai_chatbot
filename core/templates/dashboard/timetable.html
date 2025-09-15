@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="bg-white rounded-xl shadow-lg p-6">
+    <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">
+            📅 My Timetable <span class="text-indigo-600">({{ current_semester.name }})</span>
+        </h2>
+    </div>
+
+    {% if enrollments %}
+        <div class="overflow-x-auto rounded-lg border border-gray-200">
+            <table class="w-full border-collapse text-sm text-left">
+                <thead>
+                    <tr class="bg-indigo-50 text-gray-700">
+                        <th class="border-b p-3 font-semibold">Course Code</th>
+                        <th class="border-b p-3 font-semibold">Course Name</th>
+                        <th class="border-b p-3 font-semibold">Lecturer</th>
+                        <th class="border-b p-3 font-semibold">Room</th>
+                        <th class="border-b p-3 font-semibold">Schedule</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for enrollment in enrollments %}
+                    <tr class="hover:bg-indigo-50 transition-colors">
+                        <td class="p-3 font-medium text-gray-900">{{ enrollment.course_offering.course.code }}</td>
+                        <td class="p-3">{{ enrollment.course_offering.course.name }}</td>
+                        <td class="p-3">{{ enrollment.course_offering.lecturer.get_full_name }}</td>
+                        <td class="p-3">{{ enrollment.course_offering.room }}</td>
+                        <td class="p-3">{{ enrollment.course_offering.schedule }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="flex flex-col items-center justify-center py-12 text-gray-600">
+            <svg class="w-16 h-16 mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 
+                      0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            <p class="text-lg font-medium">No courses found for this semester.</p>
+            <p class="text-sm">Please check back later or contact your department.</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- ✅ Extra Content Below Timetable -->
+<div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Summary -->
+    <div class="bg-white rounded-xl shadow p-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">📊 Summary</h3>
+        <ul class="text-sm space-y-2 text-gray-700">
+            <li>Total Courses: <span class="font-bold text-indigo-600">{{ enrollments|length }}</span></li>
+            <li>Total Lecturers: <span class="font-bold text-indigo-600">{{ enrollments|length }}</span></li>
+            <li>Credits: <span class="font-bold text-indigo-600">--</span></li>
+        </ul>
+    </div>
+
+    <!-- Notes -->
+    <div class="bg-white rounded-xl shadow p-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">📝 Notes</h3>
+        <textarea class="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-400" 
+                  rows="5" placeholder="Write your personal notes here..."></textarea>
+    </div>
+
+    <!-- Upcoming Events -->
+    <div class="bg-white rounded-xl shadow p-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">📌 Upcoming Events</h3>
+        <ul class="text-sm space-y-2 text-gray-700">
+            <li>Exam: <span class="font-medium">Database Systems</span> - 10th Sept</li>
+            <li>Assignment: <span class="font-medium">Software Engineering</span> - 15th Sept</li>
+            <li>Project: <span class="font-medium">AI Research</span> - 22nd Sept</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

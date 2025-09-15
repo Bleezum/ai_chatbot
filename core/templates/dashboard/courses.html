@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold">My Courses</h1>
+        <p class="text-gray-600">Manage your course enrollments and academic progress.</p>
+    </div>
+
+    <!-- Registration Status -->
+    {% if current_semester %}
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="font-semibold text-blue-800">Current Semester: {{ current_semester.name }}</h3>
+                <p class="text-blue-600">
+                    Registration: {{ current_semester.registration_start }} to {{ current_semester.registration_end }}
+                </p>
+            </div>
+             <a href="{% url 'program_enrollment' %}" 
+               class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+                Enroll Program
+            </a>
+            <a href="{% url 'course_registration' %}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                Register Courses
+            </a>
+
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Current Courses -->
+    <div class="bg-white rounded-lg shadow mb-8">
+        <div class="px-6 py-4 border-b">
+            <h2 class="text-xl font-bold">Current Courses</h2>
+        </div>
+        <div class="p-6">
+            {% if current_enrollments %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for enrollment in current_enrollments %}
+                <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="flex justify-between items-start mb-3">
+                        <h3 class="font-bold text-lg">{{ enrollment.course_offering.course.code }}</h3>
+                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
+                            {{ enrollment.status|title }}
+                        </span>
+                    </div>
+                    <h4 class="text-gray-800 mb-2">{{ enrollment.course_offering.course.name }}</h4>
+                    <p class="text-sm text-gray-600 mb-3">
+                        <i class="fas fa-user-tie mr-2"></i>
+                        {% if enrollment.course_offering.lecturer %}
+                            {{ enrollment.course_offering.lecturer.get_full_name }}
+                        {% else %}
+                            TBA
+                        {% endif %}
+                    </p>
+                    <p class="text-sm text-gray-600 mb-3">
+                        <i class="fas fa-clock mr-2"></i>
+                        {{ enrollment.course_offering.schedule|default:"Schedule TBA" }}
+                    </p>
+                    <p class="text-sm text-gray-600 mb-4">
+                        <i class="fas fa-university mr-2"></i>
+                        {{ enrollment.course_offering.room|default:"Room TBA" }}
+                    </p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-medium">
+                            {{ enrollment.course_offering.course.credits }} Credits
+                        </span>
+                        <form action="{% url 'drop_course' enrollment.id %}" method="post" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="text-red-600 hover:text-red-800 text-sm font-medium" 
+                                    onclick="return confirm('Are you sure you want to drop this course?')">
+                                Drop Course
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-8">
+                <i class="fas fa-book-open text-4xl text-gray-300 mb-4"></i>
+                <p class="text-gray-500">You are not enrolled in any courses this semester.</p>
+                <a href="{% url 'course_registration' %}" class="text-blue-600 hover:text-blue-800 font-medium">
+                    Register for courses
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Past Courses -->
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b">
+            <h2 class="text-xl font-bold">Course History</h2>
+        </div>
+        <div class="p-6">
+            {% if past_enrollments %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Course
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Semester
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Grade
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Status
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Credits
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for enrollment in past_enrollments %}
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900">
+                                        {{ enrollment.course_offering.course.code }}
+                                    </div>
+                                    <div class="text-sm text-gray-500">
+                                        {{ enrollment.course_offering.course.name }}
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ enrollment.course_offering.semester.name }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 text-xs font-medium rounded-full 
+                                    {% if enrollment.grade == 'A' %}bg-green-100 text-green-800
+                                    {% elif enrollment.grade == 'B' %}bg-blue-100 text-blue-800
+                                    {% elif enrollment.grade == 'C' %}bg-yellow-100 text-yellow-800
+                                    {% elif enrollment.grade == 'D' %}bg-orange-100 text-orange-800
+                                    {% elif enrollment.grade == 'F' %}bg-red-100 text-red-800
+                                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                    {{ enrollment.grade|default:"In Progress" }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ enrollment.status|title }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ enrollment.course_offering.course.credits }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-8">
+                <i class="fas fa-history text-4xl text-gray-300 mb-4"></i>
+                <p class="text-gray-500">No course history available.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

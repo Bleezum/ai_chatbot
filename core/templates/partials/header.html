@@ -1,0 +1,26 @@
+<!-- templates/partials/header.html -->
+<header class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+            <div class="flex items-center">
+                <h1 class="text-2xl font-bold text-gray-900" id="sectionTitle">Dashboard</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative">
+                    <button class="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-gray-200">
+                        <i class="fas fa-bell"></i>
+                        <span class="absolute top-0 right-0 bg-red-500 text-white rounded-full text-xs w-4 h-4 flex items-center justify-center">3</span>
+                    </button>
+                </div>
+                <div class="relative">
+                    <button class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                            {{ user.first_name|first }}{{ user.last_name|first }}
+                        </div>
+                        <span class="hidden md:block">{{ user.first_name }} {{ user.last_name }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

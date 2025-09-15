@@ -1,0 +1,129 @@
+{% extends 'dashboard/student_dashboard.html' %}
+
+{% block content %}
+<h2 class="text-3xl font-bold mb-6 text-gray-800">My Personal Timetable</h2>
+<div class="flex gap-4 mb-6">
+    <button id="generateBtn" class="px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors duration-300 flex items-center gap-2">
+        <span>Generate Timetable</span>
+        <span id="progressDots" class="hidden">⠋</span>
+    </button>
+    <button id="downloadBtn" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-300 flex items-center gap-2" disabled>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        <span>Download as Image</span>
+    </button>
+</div>
+
+<div id="timetableContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+    {% for day in days %}
+    <div class="bg-gray-50 rounded-xl shadow-md p-4">
+        <h3 class="text-xl font-semibold mb-3 text-gray-700">{{ day }}</h3>
+        <ul id="{{ day }}" class="space-y-2"></ul>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Include html2canvas library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+const generateBtn = document.getElementById("generateBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+const progressDots = document.getElementById("progressDots");
+let hasTimetable = false;
+
+function startDots() {
+    let dots = 0;
+    progressDots.textContent = '';
+    progressDots.classList.remove("hidden");
+    return setInterval(() => {
+        dots = (dots + 1) % 4;
+        progressDots.textContent = '⠋⠙⠹⠸'[dots];
+    }, 300);
+}
+
+function stopDots(interval) {
+    clearInterval(interval);
+    progressDots.classList.add("hidden");
+}
+
+// Function to download timetable as image
+function downloadTimetableAsImage() {
+    // Showing a temporary loading message on the button
+    const originalText = downloadBtn.innerHTML;
+    downloadBtn.innerHTML = '<span>Generating Image...</span>';
+    downloadBtn.disabled = true;
+    
+    // Use html2canvas to capture the timetable
+    html2canvas(document.getElementById('timetableContainer'), {
+        scale: 2, // Higher quality
+        useCORS: true,
+        logging: false
+    }).then(canvas => {
+        // Convert canvas to image and download
+        const image = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.href = image;
+        link.download = 'my-timetable.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Restore button state
+        downloadBtn.innerHTML = originalText;
+        downloadBtn.disabled = false;
+    }).catch(error => {
+        console.error('Error generating image:', error);
+        alert('Failed to generate image. Please try again.');
+        downloadBtn.innerHTML = originalText;
+        downloadBtn.disabled = false;
+    });
+}
+
+generateBtn.addEventListener("click", async () => {
+    const interval = startDots();
+    generateBtn.disabled = true;
+
+    try {
+        const response = await fetch("{% url 'generate_timetable' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}",
+                "Content-Type": "application/json"
+            },
+        });
+
+        const data = await response.json();
+        const timetable = data.timetable;
+
+        {% for day in days %}
+        const ul_{{ day }} = document.getElementById("{{ day }}");
+        ul_{{ day }}.innerHTML = "";
+        if(timetable["{{ day }}"]){
+            timetable["{{ day }}"].forEach(slot=>{
+                const li = document.createElement("li");
+                li.className = "bg-white rounded-lg shadow-sm p-2 hover:shadow-md transition-shadow flex justify-between items-center";
+                li.innerHTML = `<span class="font-medium text-gray-800">${slot.course_code} - ${slot.course_name}</span>
+                                <span class="text-sm text-gray-500">${slot.time}</span>`;
+                ul_{{ day }}.appendChild(li);
+            });
+        }
+        {% endfor %}
+        
+        hasTimetable = true;
+        downloadBtn.disabled = false;
+        
+    } catch (error) {
+        console.error('Error generating timetable:', error);
+        alert('Failed to generate timetable. Please try again.');
+    } finally {
+        stopDots(interval);
+        generateBtn.disabled = false;
+    }
+});
+
+// Add event listener to download button
+downloadBtn.addEventListener("click", downloadTimetableAsImage);
+</script>
+{% endblock %}

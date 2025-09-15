@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mx-auto px-6 py-8">
+    <h1 class="text-2xl font-bold mb-6">Program Enrollment</h1>
+
+    <h2 class="text-xl font-semibold mb-4">My Enrollments</h2>
+    {% if my_enrollments %}
+        <ul class="mb-8">
+        {% for enrollment in my_enrollments %}
+            <li class="mb-2 p-3 border rounded bg-gray-50">
+                <strong>{{ enrollment.program.name }}</strong> 
+                - {{ enrollment.get_status_display }} 
+                (Enrolled: {{ enrollment.enrollment_date }})
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-gray-600 mb-6">You are not enrolled in any program.</p>
+    {% endif %}
+
+    <h2 class="text-xl font-semibold mb-4">Available Programs</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for program in programs %}
+        <div class="border rounded-lg p-4 shadow-sm hover:shadow-md transition">
+            <h3 class="font-bold text-lg">{{ program.name }}</h3>
+            <p class="text-gray-600 mb-2">{{ program.description|default:"No description" }}</p>
+            <p class="text-sm text-gray-500 mb-3">Duration: {{ program.duration }} semesters</p>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="program_id" value="{{ program.id }}">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                    Enroll
+                </button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

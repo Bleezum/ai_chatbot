@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>University AI Assistant Portal</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 flex flex-col min-h-screen">
+
+  <!-- Navbar -->
+  <nav class="bg-red-800 text-white shadow-lg">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-center py-4">
+        <div class="flex items-center space-x-4">
+          <a href="{% url 'home' %}" class="text-xl font-bold">
+            <i class="fas fa-robot mr-2"></i>University AI Assistant
+          </a>
+        </div>
+        <div class="flex items-center space-x-4">
+          {% if user.is_authenticated %}
+          <span>Welcome, {{ user.first_name }}</span>
+          <a href="{% url 'dashboard' %}" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">Dashboard</a>
+          {% else %}
+          <a href="{% url 'register' %}" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">Register</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="container mx-auto px-4 py-8 flex-grow">
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-red-800 text-white py-8">
+    <div class="container mx-auto px-4 text-center">
+      <p>&copy; 2025 University AI Assistant Portal. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
